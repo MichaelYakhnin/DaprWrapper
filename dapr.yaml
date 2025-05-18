@@ -1,0 +1,22 @@
+version: 1
+common:
+  resourcesPath: ./components/
+apps:
+  - appID: order-processor
+    appPort: 5116
+    appDirPath: ./DaperWrapperSample
+    daprHTTPPort: 4500
+    daprGRPCPort: 50001
+    schedulerHostAddress: localhost:6060
+    placementHostAddress: localhost:6050
+    command: ["dotnet", "run"]
+    #appLogDestination: console
+  - appID: order-publish
+    appDirPath: ./DaprWrapperPublisher/
+    appPort: 5108
+    daprHTTPPort: 4501
+    daprGRPCPort: 50002
+    schedulerHostAddress: localhost:6060
+    placementHostAddress: localhost:6050
+    command: ["dotnet", "run"]
+    #appLogDestination: console

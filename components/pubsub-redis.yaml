@@ -1,0 +1,16 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component-backup
+metadata:
+  name: pubsub
+spec:
+  type: pubsub.redis
+  version: v1
+  metadata:
+  - name: redisHost
+    value: localhost:6379
+  - name: redisPassword
+    value: ""
+  - name: consumerID
+    value: "orders-service"
+  - name: enableTLS
+    value: "false"
