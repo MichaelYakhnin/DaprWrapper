@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapr.Messaging" Version="1.15.3" />
+	<PackageReference Include="Dapr.AspNetCore" Version="1.15.3" />
 	<FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

@@ -1,10 +1,11 @@
+using Dapr.Client;
+using Dapr.Messaging.PublishSubscribe.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Dapr.Messaging.PublishSubscribe.Extensions;
 namespace DaprWrapper;
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDaprStreamingSubscriber<TMessage, TSubscriber>(
+    public static IServiceCollection AddSubscriber<TMessage, TSubscriber>(
         this IServiceCollection services, IConfiguration config)
         where TSubscriber : class, ISubscriber<TMessage>
     {
@@ -17,6 +18,25 @@ public static class ServiceCollectionExtensions
             builder.WithSubscriber(provider.GetRequiredService<ISubscriber<TMessage>>())
                    .ConfigureFrom(config);
             return builder;
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddPublisher<TMessage>(
+            this IServiceCollection services,
+            IConfiguration configuration)
+    {
+        services.AddDaprClient();
+
+        services.AddSingleton<IPublisher<TMessage>>(sp =>
+        {
+            var daprClient = sp.GetRequiredService<DaprClient>();
+
+            return new DaprPublisherBuilder<TMessage>()
+                .ConfigureFrom(configuration)
+                .WithClient(daprClient)
+                .Build();
         });
 
         return services;

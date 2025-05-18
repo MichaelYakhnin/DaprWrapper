@@ -1,4 +1,5 @@
 using Dapr.Client;
+using DaprWrapper;
 using DaprWrapperPublisher.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDaprClient();
+builder.Services.AddPublisher<Order>(builder.Configuration);
 
 var app = builder.Build();
 
@@ -21,7 +22,8 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/weatherforecast", async (DaprClient client) =>
 {
-    await client.PublishEventAsync("pubsub", "orders", new Order("123", "customer-456", 99, DateTime.UtcNow));
+    var publisher = app.Services.GetRequiredService<IPublisher<Order>>();
+    await publisher.PublishAsync(new Order("123", "customer-456", 99, DateTime.UtcNow));
     return Results.Ok();
 })
 .WithName("GetWeatherForecast")
